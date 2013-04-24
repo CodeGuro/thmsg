@@ -58,7 +58,7 @@ void aya(std::vector<byte> buf)
 	std::cout << std::endl << std::endl;
 }
 
-std::vector<byte> hex2bytes(std::string const & str)
+std::vector<byte> hex2bytes(std::string str)
 {
 	std::vector<byte> buf;
 

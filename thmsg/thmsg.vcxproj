@@ -13,6 +13,9 @@
   <ItemGroup>
     <ClInclude Include="trunk\headers\thmsg.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="trunk\sources\thmsg.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{818F6861-FF08-4CDA-9636-4B581BF84E0A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
