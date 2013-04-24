@@ -37,7 +37,8 @@ inline void endian_swap(unsigned int& x)
 //decode
 void xorz(std::vector<byte> * buf, int xorval, int xoradd, int addadd)
 {
-	for(uint32_t i=0; i<buf->size(); i++) {
+	for(uint32_t i=0; i<buf->size(); i++) 
+	{
 		buf->at(i) = buf->at(i) ^ xorval;
 		xorval = (xorval + xoradd) % 256;
 		xoradd = (xoradd + addadd) % 256;
@@ -52,9 +53,9 @@ void aya(std::vector<byte> buf)
 	std::cout << std::hex;
 	
 	xorz(&buf, 0x77, 7, 16);
-	for(uint32_t i=0; i<len; i++) {
+	for(uint32_t i=0; i<len; i++) 
 		std::cout << (int)buf.at(i) << " ";
-	}
+	
 	std::cout << std::endl << std::endl;
 }
 

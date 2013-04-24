@@ -3,7 +3,8 @@
 // Main function
 int main(int argc, char* argv[])
 {
-	if(argc < 3) {
+	if(argc < 3) 
+	{
 		std::cout << "Usage: -d/-p infile outfile" << std::endl;
 		std::cout << " -d: dump a .msg file into a human-readable .txt file" << std::endl;
 		std::cout << " -p: repack a .txt file into a .msg file" << std::endl;
@@ -46,7 +47,8 @@ int main(int argc, char* argv[])
 		//  1 byte  - message length
 		std::vector<msg> msgdata;
 
-		while( !fin.eof() ) {
+		while( !fin.eof() ) 
+		{
 			msg nu; nu.indexref=0; nu.data.clear();
 
 			// Keep track of where our messages are, and what index references them, if any.
@@ -62,7 +64,8 @@ int main(int argc, char* argv[])
 			fin.read( (char*)(&nu.type), 1);
 			fin.read( (char*)(&nu.len), 1);
 
-			if(nu.len>0) {
+			if(nu.len>0) 
+			{
 				nu.data.resize(nu.len);
 				fin.read( (char*)(&nu.data[0]) , nu.len);
 			}
@@ -115,8 +118,9 @@ int main(int argc, char* argv[])
 		std::cout << std::endl;
 		std::cout << "Index count: " << indexcnt << std::endl;
 		std::cout << "MSG count: " << msgdata.size() << std::endl;
-	}else if(strcmp(argv[1],"-p") == 0) 
-		{
+	}
+	else if(strcmp(argv[1],"-p") == 0) 
+	{
 		std::ifstream fin(argv[2]);
 		if(!fin){ std::cout << "Failed to open " << argv[2] << std::endl; return 1; }
 
@@ -124,15 +128,19 @@ int main(int argc, char* argv[])
 		std::vector<uint32_t> indexes;
 		std::vector<msg> msgdata;
 
-		while( !fin.eof() ) {
+		while( !fin.eof() ) 
+		{
 			std::string tmp;
 
 			fin >> tmp;
-			if(tmp.compare("ptr") == 0) {
+			if(tmp.compare("ptr") == 0) 
+			{
 				// Read pointer location.
 				fin >> tmp;
 				indexes.push_back( hex2long(tmp) );
-			} else if(tmp.compare("msg") == 0) {
+			}
+			else if(tmp.compare("msg") == 0) 
+			{
 				msg nu; nu.len=0; nu.pos=0; nu.indexref=0; nu.data.clear();
 
 				fin >> tmp; nu.header = hex2short(tmp);		// Read 2-byte header.
@@ -143,7 +151,8 @@ int main(int argc, char* argv[])
 				//fin.seekg(1, ios_base::cur);
 
 				getline(fin, tmp);
-				if(nu.type == MSGTYPE_DIALOGUE) {
+				if(nu.type == MSGTYPE_DIALOGUE)
+				{
 					tmp.erase(0, 1);  // erase the space delimiter
 					tmp.push_back(0); // drop a null byte on the end
 					while( (tmp.length() % 4) != 0 ) { tmp.push_back(0); } // fill it out until it's fittable into a WORD space
@@ -151,7 +160,9 @@ int main(int argc, char* argv[])
 					nu.data = str2bytes(tmp);
 					xorz(&nu.data, 0x77, 7, 16);
 					nu.len = nu.data.size();
-				} else if(tmp.length() > 0) {
+				}
+				else if(tmp.length() > 0) 
+				{
 					nu.data = hex2bytes(tmp);
 					nu.len = nu.data.size();
 				}
@@ -175,23 +186,24 @@ int main(int argc, char* argv[])
 		
 
 		// Write the messages.
-		for(uint32_t i=0; i<msgdata.size(); i++) {
+		for(uint32_t i=0; i<msgdata.size(); i++) 
+		{
 			msgdata.at(i).pos = fout.tellp();
 			fout.write( (char*)(&msgdata.at(i).header), 2) ;
 			fout.write( (char*)(&msgdata.at(i).type), 1) ;
 			fout.write( (char*)(&msgdata.at(i).len), 1) ;
 
-			if(msgdata.at(i).len>0) {
-				for(uint32_t j=0; j<msgdata.at(i).data.size(); j++) {
-					fout.write( (char*)(&msgdata.at(i).data.at(j)), 1) ;
-				}
-			}
+			if(msgdata.at(i).len>0)
+				for(uint32_t j=0; j<msgdata.at(i).data.size(); j++) 
+					fout.write( (char*)(&msgdata.at(i).data.at(j)), 1);
 		}
 
 		// Traverse the message data to rewrite the old index table
 		//  with the new pointers.
-		for(uint32_t i=0; i<msgdata.size(); i++) {
-			if(msgdata.at(i).indexref>0) {
+		for(uint32_t i=0; i<msgdata.size(); i++) 
+		{
+			if(msgdata.at(i).indexref>0) 
+			{
 				fout.seekp(4 + (msgdata.at(i).indexref * 4) );
 				fout.write( (char*)(&msgdata.at(i).pos), 4) ;
 			}
@@ -200,7 +212,9 @@ int main(int argc, char* argv[])
 		// Close the file and finish up.
 		fout.close();
 
-	} else { std::cout << "unrecognized switch mode." << std::endl; }
+	}
+	else
+		std::cout << "unrecognized switch mode." << std::endl;
 
-    return 0;
+    return EXIT_SUCCESS;
 }
