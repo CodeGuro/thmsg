@@ -34,8 +34,8 @@ inline void endian_swap(unsigned int& x)
         (x<<24);
 }
 
-//decode
-void xorz(std::vector<byte> * buf, int xorval, int xoradd, int addadd)
+// Decode
+void xorz(std::vector<byte>* buf, int xorval, int xoradd, int addadd) 
 {
 	for(uint32_t i=0; i<buf->size(); i++) 
 	{
@@ -45,64 +45,63 @@ void xorz(std::vector<byte> * buf, int xorval, int xoradd, int addadd)
 	}
 }
 
-//Ayayaya! report on the hex values!
-void aya(std::vector<byte> buf)
+// Report! Ayayayaya
+void aya(std::vector<byte> buf) 
 {
 	uint32_t len = buf.size();
 
 	std::cout << std::hex;
-	
+
 	xorz(&buf, 0x77, 7, 16);
 	for(uint32_t i=0; i<len; i++) 
 		std::cout << (int)buf.at(i) << " ";
-	
 	std::cout << std::endl << std::endl;
 }
 
-std::vector<byte> hex2bytes(std::string str)
+std::vector<byte> hex2bytes(std::string str) 
 {
 	std::vector<byte> buf;
 
 	// First pass: erase whitespace
-	for(uint32_t i=0; i<str.length(); i++)
+	for(uint32_t i=0; i<str.length(); i++) 
 		if( str.at(i) == ' ' || str.at(i) == '-' )
-			str.erase(i, 1);
+			str.erase(i, 1); 
 
 	// Second pass: process 2 bytes at a time, converting them to numeral format
-	for(uint32_t i=0; i<str.length(); i+=2)
+	for(uint32_t i=0; i<str.length(); i+=2) 
 		buf.push_back( (byte)( strtoul(str.substr(i, 2).c_str(), 0, 16) ) );
+	
 
 	return buf;
 }
 
-inline uint32_t hex2long(std::string const & str)
+uint32_t hex2long(std::string str) 
 {
 	return (uint32_t)( strtoul(str.c_str(), 0, 16)  );
 }
 
-inline uint16_t hex2short(std::string const & str)
+uint16_t hex2short(std::string str) 
 {
 	return (uint16_t)( strtoul(str.c_str(), 0, 16)  );
 }
 
-inline uint8_t hex2byte(std::string const & str)
+uint8_t hex2byte(std::string str) 
 {
 	return (uint8_t)( strtoul(str.c_str(), 0, 16)  );
 }
 
-std::vector<byte> str2bytes(std::string const & str)
+std::vector<byte> str2bytes(std::string str) 
 {
 	uint32_t len = str.length();
 	std::vector<byte> buf;
 
 	for(uint32_t i=0; i<len; i++) 
 		buf.push_back( (uint8_t)str[i] );
-	
 
 	return buf;
 }
 
-std::string byte2str(std::vector<byte> const & buf)
+std::string byte2str(std::vector<byte> buf) 
 {
 	std::string tmp;
 
@@ -112,14 +111,14 @@ std::string byte2str(std::vector<byte> const & buf)
 	return tmp;
 }
 
-std::string byte2hex(std::vector<byte> const & buf)
+std::string byte2hex(std::vector<byte> buf) 
 {
 	std::string tmp;
 
 	for(uint32_t i=0; i<buf.size(); i++) 
 	{
-		char chrtmp[2];
-		sprintf( chrtmp, "%X", (uint16_t)(buf.at(i)) );
+		char chrtmp[3];
+		sprintf_s( chrtmp, "%X", (uint16_t)(buf.at(i)) );
 		if(strlen(chrtmp) == 1) { chrtmp[1] = chrtmp[0]; chrtmp[0] = '0'; }
 		else if(strlen(chrtmp) == 0) { chrtmp[0] = '0'; chrtmp[1] = '0'; }
 		chrtmp[2] = 0;
@@ -130,10 +129,10 @@ std::string byte2hex(std::vector<byte> const & buf)
 	return tmp;
 }
 
-std::string int2hex(uint8_t i)
+std::string int2hex(uint8_t i) 
 {
 	char chrtmp[32];
-	sprintf( chrtmp, "%X", i );
+	sprintf_s( chrtmp, "%X", i );
 
 	std::string tmp( 2-strlen(chrtmp), '0');
 	tmp += chrtmp;
@@ -144,7 +143,7 @@ std::string int2hex(uint8_t i)
 std::string int2hex(uint16_t i) 
 {
 	char chrtmp[32];
-	sprintf( chrtmp, "%X", i );
+	sprintf_s( chrtmp, "%X", i );
 
 	std::string tmp( 4-strlen(chrtmp), '0');
 	tmp += chrtmp;
@@ -155,7 +154,7 @@ std::string int2hex(uint16_t i)
 std::string int2hex(uint32_t i) 
 {
 	char chrtmp[32];
-	sprintf( chrtmp, "%X", i );
+	sprintf_s( chrtmp, "%X", i );
 
 	std::string tmp( 8-strlen(chrtmp), '0');
 	tmp += chrtmp;
@@ -163,12 +162,14 @@ std::string int2hex(uint32_t i)
 	return tmp;
 }
 
-void cleanbytes(std::vector<byte> * data) 
+void cleanbytes(std::vector<byte>* data) 
 {
 	std::vector<byte>::iterator i = data->begin();
-	while( i != data->end() )
+	while( i != data->end() ) 
 	{
-		if (*i == 0){ i = data->erase( i ); }
-		else{ ++i; }
+		if (*i == 0)
+			i = data->erase( i ); 
+		else
+			++i; 
 	}
 }

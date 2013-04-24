@@ -1,6 +1,6 @@
 #include <thmsg.hpp>
 #include <fstream>
-// Main function
+
 int main(int argc, char* argv[])
 {
 	if(argc < 3) 
@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Dumping mode
-	if(strcmp(argv[1],"-d") == 0)
+	if(strcmp(argv[1],"-d") == 0) 
 	{
 		std::ifstream fin(argv[2], std::ios_base::binary);
 		if(!fin){ std::cout << "Failed to open " << argv[2] << std::endl; return 1; }
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 		// Next, we'll read every index and store them in an array
 		//  for use in later reconstruction of the MSG file.
 		std::vector<uint32_t> indexes;
-		for(uint32_t i=0; i<indexcnt; i++)
+		for(uint32_t i=0; i<indexcnt; i++) 
 		{
 			uint32_t tmp;
 			fin.read( (char*)(&tmp), 4);
@@ -93,22 +93,19 @@ int main(int argc, char* argv[])
 
 		//fout << std::hex;
 		for(uint32_t i=0; i<indexes.size(); i++) 
-		{
 			fout << "ptr " << int2hex(indexes.at(i)) << std::endl;
-		}
+
 		for(uint32_t i=0; i<msgdata.size(); i++) 
 		{
 			fout << "msg "
 				<< int2hex(msgdata.at(i).header) << " "
 				<< int2hex(msgdata.at(i).type) << "  "
 				<< int2hex(msgdata.at(i).indexref) << " ";
-				//<< int2hex(msgdata.at(i).len) << ":";
 
 			if(msgdata.at(i).type == MSGTYPE_DIALOGUE) 
 				fout << byte2str(msgdata.at(i).data);
-			 else 
+			else 
 				fout << byte2hex(msgdata.at(i).data);
-			
 
 			fout << std::endl;
 		}
@@ -151,11 +148,12 @@ int main(int argc, char* argv[])
 				//fin.seekg(1, ios_base::cur);
 
 				getline(fin, tmp);
-				if(nu.type == MSGTYPE_DIALOGUE)
+				if(nu.type == MSGTYPE_DIALOGUE) 
 				{
 					tmp.erase(0, 1);  // erase the space delimiter
 					tmp.push_back(0); // drop a null byte on the end
-					while( (tmp.length() % 4) != 0 ) { tmp.push_back(0); } // fill it out until it's fittable into a WORD space
+					while( (tmp.length() % 4) != 0 ) 
+					{ tmp.push_back(0); } // fill it out until it's fittable into a WORD space
 
 					nu.data = str2bytes(tmp);
 					xorz(&nu.data, 0x77, 7, 16);
@@ -183,19 +181,18 @@ int main(int argc, char* argv[])
 		// Write the old index table.
 		for(uint32_t i=0; i<indexes.size(); i++) 
 			fout.write( (char*)(&indexes.at(i)), 4);
-		
 
 		// Write the messages.
 		for(uint32_t i=0; i<msgdata.size(); i++) 
 		{
-			msgdata.at(i).pos = fout.tellp();
+			msgdata.at(i).pos = (uint32_t)fout.tellp();
 			fout.write( (char*)(&msgdata.at(i).header), 2) ;
 			fout.write( (char*)(&msgdata.at(i).type), 1) ;
 			fout.write( (char*)(&msgdata.at(i).len), 1) ;
 
-			if(msgdata.at(i).len>0)
+			if(msgdata.at(i).len>0) 
 				for(uint32_t j=0; j<msgdata.at(i).data.size(); j++) 
-					fout.write( (char*)(&msgdata.at(i).data.at(j)), 1);
+					fout.write( (char*)(&msgdata.at(i).data.at(j)), 1) ;
 		}
 
 		// Traverse the message data to rewrite the old index table
@@ -212,9 +209,9 @@ int main(int argc, char* argv[])
 		// Close the file and finish up.
 		fout.close();
 
-	}
+	} 
 	else
-		std::cout << "unrecognized switch mode." << std::endl;
+		std::cout << "unrecognized switch mode." << std::endl; 
 
     return EXIT_SUCCESS;
 }
